@@ -50,6 +50,7 @@
   
   void motorSpeed(float velocity) {    
     velocity = map(velocity, -100, 100, -255, 255);
+    motor.setSpeed(velocity);
     if (velocity >= 0 && velocity <= 255) {
       motor.run(FORWARD);
     } else {
