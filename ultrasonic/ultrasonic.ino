@@ -2,14 +2,12 @@
   #include <Ultrasonic.h>
   
   #define ECHO_PIN A4
-  #define MOTOR_PIN_1 0
-  #define MOTOR_PIN_2 1
   #define TRIGGER_PIN A5
 
   #define MOTOR_VELOCITY_0 0
   #define MOTOR_VELOCITY_1 20
   #define MOTOR_VELOCITY_2 130
-  #define MOTOR_VELOCITY_3 160
+  #define MOTOR_VELOCITY_3 170
   #define MOTOR_VELOCITY_4 200
 
   #define PIN_ENABLE 7
@@ -25,13 +23,13 @@
   float u; // Control Action (controlled variable)
   float ei = 0;
   float ed = 0;
-  float kp = 1.2; // 1.2
-  float kd = 1.2; // 1
+  float kp = 1.2;
+  float kd = 1.2;
   float xSp = 30; // Setpoint in centimeters
   float kDead = 7; // Dead-band of actuation (motor)
   float uMax = 75; // Saturation Limits
   float uMin = -75;
-  float ki = 0.0005; // 0.0005
+  float ki = 0.0005;
   float errors[3] = { 0, 0, 0 }; // Error vector
   
   Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
@@ -50,7 +48,10 @@
   
   void motorSpeed(float velocity) {    
     velocity = map(velocity, -100, 100, -255, 255);
-    motor.setSpeed(velocity);
+
+    float velocityCorrection = velocity > 0 ? velocity : -velocity;
+    motor.setSpeed(velocityCorrection);
+
     if (velocity >= 0 && velocity <= 255) {
       motor.run(FORWARD);
     } else {
