@@ -11,11 +11,9 @@
   #define MOTOR_VELOCITY_4 200
 
   #define PIN_ENABLE 7
-
-  AF_DCMotor motor(4);
   
   unsigned int i;
-  
+
   unsigned long ts = 30; // Sampling Period
   unsigned long start = 0;
   
@@ -31,6 +29,10 @@
   float uMin = -75;
   float ki = 0.0005;
   float errors[3] = { 0, 0, 0 }; // Error vector
+
+  float maxVelocity = MOTOR_VELOCITY_3;
+
+  AF_DCMotor motor(4);
   
   Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
 
@@ -50,6 +52,9 @@
     velocity = map(velocity, -100, 100, -255, 255);
 
     float velocityCorrection = velocity > 0 ? velocity : -velocity;
+
+    if (velocityCorrection > maxVelocity) velocityCorrection = maxVelocity;
+
     motor.setSpeed(velocityCorrection);
 
     if (velocity >= 0 && velocity <= 255) {
