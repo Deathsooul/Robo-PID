@@ -23,7 +23,7 @@
   float ed = 0;
   float kp = 1.2;
   float kd = 1.2;
-  float xSp = 30; // Setpoint in centimeters
+  float xSp = 15; // Setpoint in centimeters
   float kDead = 7; // Dead-band of actuation (motor)
   float uMax = 75; // Saturation Limits
   float uMin = -75;
@@ -43,7 +43,7 @@
 
     digitalWrite(PIN_ENABLE, LOW);
 
-    motor.setSpeed(MOTOR_VELOCITY_4);
+    motor.setSpeed(MOTOR_VELOCITY_3);
     
     motor.run(RELEASE);
   }
