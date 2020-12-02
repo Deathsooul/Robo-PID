@@ -8,7 +8,7 @@
   #define MOTOR_VELOCITY_1 20
   #define MOTOR_VELOCITY_2 130
   #define MOTOR_VELOCITY_3 175
-  #define MOTOR_VELOCITY_4 190
+  #define MOTOR_VELOCITY_4 195
 
   #define PIN_ENABLE 7
   
