@@ -2,22 +2,18 @@
   #include <Ultrasonic.h>
   
   #define ECHO_PIN A4
-  #define MOTOR_PIN_1 0
-  #define MOTOR_PIN_2 1
   #define TRIGGER_PIN A5
 
   #define MOTOR_VELOCITY_0 0
   #define MOTOR_VELOCITY_1 20
   #define MOTOR_VELOCITY_2 130
-  #define MOTOR_VELOCITY_3 160
-  #define MOTOR_VELOCITY_4 200
+  #define MOTOR_VELOCITY_3 175
+  #define MOTOR_VELOCITY_4 195
 
   #define PIN_ENABLE 7
-
-  AF_DCMotor motor(4);
   
   unsigned int i;
-  
+
   unsigned long ts = 30; // Sampling Period
   unsigned long start = 0;
   
@@ -25,14 +21,19 @@
   float u; // Control Action (controlled variable)
   float ei = 0;
   float ed = 0;
-  float kp = 1.2; // 1.2
-  float kd = 1.2; // 1
-  float xSp = 30; // Setpoint in centimeters
+  float kp = 1.2;
+  float kd = 1.2;
+  float xSp = 41; // Setpoint in centimeters
   float kDead = 7; // Dead-band of actuation (motor)
   float uMax = 75; // Saturation Limits
   float uMin = -75;
-  float ki = 0.0005; // 0.0005
+  float ki = 0.0005;
   float errors[3] = { 0, 0, 0 }; // Error vector
+
+  float maxVelocity = MOTOR_VELOCITY_4;
+  float minVelocity = MOTOR_VELOCITY_3;
+
+  AF_DCMotor motor(4);
   
   Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
 
@@ -43,13 +44,21 @@
 
     digitalWrite(PIN_ENABLE, LOW);
 
-    motor.setSpeed(MOTOR_VELOCITY_4);
+    motor.setSpeed(MOTOR_VELOCITY_3);
     
     motor.run(RELEASE);
   }
   
   void motorSpeed(float velocity) {    
     velocity = map(velocity, -100, 100, -255, 255);
+
+    float velocityCorrection = velocity > 0 ? velocity : -velocity;
+
+    if (velocityCorrection < minVelocity) velocityCorrection = minVelocity;
+    if (velocityCorrection > maxVelocity) velocityCorrection = maxVelocity;
+
+    motor.setSpeed(velocityCorrection);
+
     if (velocity >= 0 && velocity <= 255) {
       motor.run(FORWARD);
     } else {
